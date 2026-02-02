@@ -6,6 +6,8 @@ from modules.medicine import medicine
 from modules.appointments import appointments
 from modules.diet import diet
 from modules.exercise import exercise
+from modules.reports import reports
+
 
 
 
@@ -52,3 +54,8 @@ elif choice == "Exercise":
     else:
         st.warning("Please login first")
 
+elif choice == "Reports":
+    if "user_id" in st.session_state:
+        reports()
+    else:
+        st.warning("Please login first")
