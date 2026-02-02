@@ -4,12 +4,13 @@ from auth.register import register
 from modules.health_records import health_records
 from modules.medicine import medicine
 from modules.appointments import appointments
-
+from modules.diet import diet
 
 
 st.title("HealthIndia – Smart Healthcare System")
 
-menu = ["Login", "Register", "Health Records", "Medicine", "Appointments"]
+# ✅ Diet menu added
+menu = ["Login", "Register", "Health Records", "Medicine", "Appointments", "Diet"]
 choice = st.sidebar.selectbox("Menu", menu)
 
 if choice == "Login":
@@ -24,7 +25,6 @@ elif choice == "Health Records":
     else:
         st.warning("Please login first")
 
-# ✅ NEW BLOCK (SAFE)
 elif choice == "Medicine":
     if "user_id" in st.session_state:
         medicine()
@@ -34,5 +34,12 @@ elif choice == "Medicine":
 elif choice == "Appointments":
     if "user_id" in st.session_state:
         appointments()
+    else:
+        st.warning("Please login first")
+
+# ✅ NEW BLOCK — Diet
+elif choice == "Diet":
+    if "user_id" in st.session_state:
+        diet()
     else:
         st.warning("Please login first")
