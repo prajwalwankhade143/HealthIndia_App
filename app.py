@@ -3,12 +3,13 @@ from auth.login import login
 from auth.register import register
 from modules.health_records import health_records
 from modules.medicine import medicine
+from modules.appointments import appointments
+
 
 
 st.title("HealthIndia – Smart Healthcare System")
 
-# ✅ MENU UPDATED (Medicine added, baki unchanged)
-menu = ["Login", "Register", "Health Records", "Medicine"]
+menu = ["Login", "Register", "Health Records", "Medicine", "Appointments"]
 choice = st.sidebar.selectbox("Menu", menu)
 
 if choice == "Login":
@@ -27,5 +28,11 @@ elif choice == "Health Records":
 elif choice == "Medicine":
     if "user_id" in st.session_state:
         medicine()
+    else:
+        st.warning("Please login first")
+
+elif choice == "Appointments":
+    if "user_id" in st.session_state:
+        appointments()
     else:
         st.warning("Please login first")
