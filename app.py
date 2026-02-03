@@ -1,4 +1,6 @@
 import streamlit as st   # ✅ FIRST LINE (MANDATORY)
+from db_connection import get_connection
+import urllib.parse
 
 # ---------- PAGE CONFIG (BLACK FLASH FIX) ----------
 st.set_page_config(
@@ -23,18 +25,18 @@ from modules.dashboard import dashboard
 st.markdown("""
 <style>
 
-/* ========== FULL APP BACKGROUND ========== */
+/* FULL APP BACKGROUND */
 html, body, .stApp {
-    background-color: #eef2f7 !important;   /* light bluish */
+    background-color: #eef2f7 !important;
     color: #1f2937;
 }
 
-/* ========== MAIN CONTENT AREA ========== */
+/* MAIN CONTENT */
 [data-testid="stAppViewContainer"] {
     background-color: #eef2f7 !important;
 }
 
-/* ========== CENTER PAGE (CARD FEEL) ========== */
+/* CENTER CARD */
 .block-container {
     background-color: #ffffff;
     border-radius: 16px;
@@ -44,20 +46,18 @@ html, body, .stApp {
     box-shadow: 0 12px 28px rgba(0,0,0,0.08);
 }
 
-/* ========== SIDEBAR (SLIGHTLY DIFFERENT) ========== */
+/* SIDEBAR */
 section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #e6ecf5, #dde6f2) !important;
     padding: 16px;
     border-right: 1px solid #d0d7e2;
 }
 
-/* Sidebar title */
 section[data-testid="stSidebar"] h1 {
     color: #1e293b;
     font-weight: 700;
 }
 
-/* Sidebar buttons */
 section[data-testid="stSidebar"] button {
     width: 100%;
     background-color: #ffffff !important;
@@ -72,7 +72,6 @@ section[data-testid="stSidebar"] button {
     transition: all 0.25s ease;
 }
 
-/* Sidebar hover */
 section[data-testid="stSidebar"] button:hover {
     background: linear-gradient(90deg, #4f8bf9, #6a5cff) !important;
     color: white !important;
@@ -81,19 +80,16 @@ section[data-testid="stSidebar"] button:hover {
     border: none;
 }
 
-/* Logged in box */
 section[data-testid="stSidebar"] .stAlert {
     border-radius: 10px;
     font-weight: 600;
 }
 
-/* ========== FORM INPUTS ========== */
 input, textarea, select {
     background-color: #f1f5f9 !important;
     border-radius: 10px !important;
 }
 
-/* ========== TABLES & CHARTS ========== */
 [data-testid="stDataFrame"],
 [data-testid="stChart"] {
     background-color: #ffffff;
@@ -103,7 +99,6 @@ input, textarea, select {
 
 </style>
 """, unsafe_allow_html=True)
-
 
 
 # ---------- TITLE ----------
@@ -153,6 +148,17 @@ else:
     if st.sidebar.button("📄 Reports"):
         st.session_state["page"] = "Reports"
 
+    # ---------- GOOGLE MAP SEARCH (SIDEBAR) ----------
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("📍 Hospital Map")
+
+    hospital_place = st.sidebar.text_input(
+        "Search Hospital / Location",
+        placeholder="e.g. AIIMS Nagpur"
+    )
+
+    search_map = st.sidebar.button("🔍 Search on Map")
+
     if st.sidebar.button("🚪 Logout"):
         st.session_state.clear()
         st.rerun()
@@ -187,3 +193,40 @@ elif page == "Exercise":
 
 elif page == "Reports":
     reports()
+
+
+# -------- GOOGLE MAP DISPLAY (MAIN PAGE + DB SAVE) --------
+if is_logged_in and 'search_map' in locals() and search_map and hospital_place:
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # SAVE SEARCH TO DATABASE
+    cursor.execute(
+        """
+        INSERT INTO map_search_history (user_id, location_name)
+        VALUES (%s, %s)
+        """,
+        (st.session_state["user_id"], hospital_place)
+    )
+    conn.commit()
+
+    query = urllib.parse.quote(hospital_place)
+    map_url = f"https://www.google.com/maps?q={query}&output=embed"
+
+    st.markdown("### 📍 Hospital Location")
+    st.components.v1.html(
+        f"""
+        <iframe
+            src="{map_url}"
+            width="100%"
+            height="450"
+            style="border:0; border-radius:14px;"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        """,
+        height=470
+    )
+
+    st.success("📌 Location search saved successfully")
