@@ -13,10 +13,9 @@ from modules.dashboard import dashboard
 
 st.title("HealthIndia – Smart Healthcare System")
 
-# 🔐 CHECK LOGIN STATUS
 is_logged_in = "user_id" in st.session_state
 
-# 🧭 MENU CONTROL
+# 🔹 BEFORE LOGIN → Register + Login ALWAYS visible
 if not is_logged_in:
     menu = ["Register", "Login"]
 else:
@@ -32,14 +31,14 @@ else:
 
 choice = st.sidebar.selectbox("Menu", menu)
 
-# 🟢 BEFORE LOGIN
+# 🟢 BEFORE LOGIN FLOW
 if not is_logged_in:
     if choice == "Register":
         register()
     elif choice == "Login":
         login()
 
-# 🟢 AFTER LOGIN
+# 🟢 AFTER LOGIN FLOW
 else:
     if choice == "Health Records":
         health_records()

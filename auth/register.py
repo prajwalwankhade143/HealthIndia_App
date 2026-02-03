@@ -16,5 +16,10 @@ def register():
             (name, email, password)
         )
         conn.commit()
-        st.success("Registration Successful")
+
+        st.success("Registration Successful. Please login.")
+
+        # 🔑 IMPORTANT LINE
+        st.session_state["show_login"] = True
+
 print("register.py loaded")
