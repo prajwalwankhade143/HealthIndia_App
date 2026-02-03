@@ -1,3 +1,36 @@
+st.markdown("""
+<style>
+/* Sidebar background */
+section[data-testid="stSidebar"] {
+    background-color: #f5f7fb;
+}
+
+/* Sidebar title */
+section[data-testid="stSidebar"] h1 {
+    color: #2c3e50;
+}
+
+/* Sidebar buttons style */
+section[data-testid="stSidebar"] button {
+    width: 100%;
+    border-radius: 8px;
+    margin: 6px 0px;
+    padding: 10px;
+    background-color: white;
+    color: #2c3e50;
+    border: 1px solid #dcdcdc;
+    font-weight: 600;
+}
+
+/* Hover effect */
+section[data-testid="stSidebar"] button:hover {
+    background-color: #4f8bf9;
+    color: white;
+    border: none;
+}
+</style>
+""", unsafe_allow_html=True)
+
 import streamlit as st
 
 from auth.login import login
