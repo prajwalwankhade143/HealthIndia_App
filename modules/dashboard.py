@@ -3,7 +3,7 @@ import pandas as pd
 from db_connection import get_connection
 
 def dashboard():
-    st.subheader("Health Dashboard")
+    st.subheader("🏥 Health Dashboard")
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -23,13 +23,24 @@ def dashboard():
 
     df = pd.DataFrame(data, columns=["BMI", "BP", "Date"])
 
-    st.markdown("### Health Records Table")
-    st.dataframe(df)
+    # -------- CARD 1: TABLE --------
+    st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
+    st.markdown("### 🩺 Health Records")
+    st.dataframe(df, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("### BMI Trend Over Time")
-    st.line_chart(df["BMI"])
+    # -------- CARD 2: BMI --------
+    st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
+    st.markdown("### 📈 BMI Trend Over Time")
+    st.caption("Shows BMI variation based on recorded dates")
+    st.line_chart(df["BMI"], use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("### Blood Pressure Overview")
-    st.bar_chart(df["BP"])
+    # -------- CARD 3: BP --------
+    st.markdown('<div class="dashboard-card">', unsafe_allow_html=True)
+    st.markdown("### ❤️ Blood Pressure Overview")
+    st.caption("Recorded blood pressure values")
+    st.bar_chart(df["BP"], use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 print("dashboard.py loaded")
