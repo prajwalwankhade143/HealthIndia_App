@@ -1,3 +1,4 @@
+# auth/register.py
 import streamlit as st
 from db_connection import get_connection
 
@@ -12,14 +13,10 @@ def register():
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
+            "INSERT INTO users (name, email, password) VALUES (%s,%s,%s)",
             (name, email, password)
         )
         conn.commit()
 
-        st.success("Registration Successful. Please login.")
-
-        # 🔑 IMPORTANT LINE
-        st.session_state["show_login"] = True
-
-print("register.py loaded")
+        st.success("Registration successful. Please login.")
+        st.session_state["page"] = "Login"

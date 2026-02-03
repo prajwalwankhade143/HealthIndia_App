@@ -1,4 +1,4 @@
-
+# auth/login.py
 import streamlit as st
 from db_connection import get_connection
 
@@ -12,7 +12,7 @@ def login():
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT * FROM users WHERE email=%s AND password=%s",
+            "SELECT id FROM users WHERE email=%s AND password=%s",
             (email, password)
         )
         user = cursor.fetchone()
@@ -20,6 +20,6 @@ def login():
         if user:
             st.session_state["user_id"] = user[0]
             st.success("Login Successful")
+            st.rerun()   # 🔥 IMPORTANT
         else:
             st.error("Invalid Credentials")
-print("login.py loaded, login() exists")

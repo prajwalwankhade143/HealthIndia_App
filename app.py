@@ -13,44 +13,78 @@ from modules.dashboard import dashboard
 
 st.title("HealthIndia – Smart Healthcare System")
 
+# -------- SESSION DEFAULTS --------
+if "page" not in st.session_state:
+    st.session_state["page"] = "Register"
+
 is_logged_in = "user_id" in st.session_state
 
-# 🔹 BEFORE LOGIN → Register + Login ALWAYS visible
+# -------- SIDEBAR --------
+st.sidebar.title("Menu")
+
+# 🔹 BEFORE LOGIN
 if not is_logged_in:
-    menu = ["Register", "Login"]
+    if st.sidebar.button("📝 Register"):
+        st.session_state["page"] = "Register"
+
+    if st.sidebar.button("🔐 Login"):
+        st.session_state["page"] = "Login"
+
+# 🔹 AFTER LOGIN → ALL FEATURES AS BOXES
 else:
-    menu = [
-        "Health Records",
-        "Medicine",
-        "Appointments",
-        "Diet",
-        "Exercise",
-        "Reports",
-        "Dashboard"
-    ]
+    st.sidebar.success("Logged In")
 
-choice = st.sidebar.selectbox("Menu", menu)
+    if st.sidebar.button("📊 Dashboard"):
+        st.session_state["page"] = "Dashboard"
 
-# 🟢 BEFORE LOGIN FLOW
-if not is_logged_in:
-    if choice == "Register":
-        register()
-    elif choice == "Login":
-        login()
+    if st.sidebar.button("🩺 Health Records"):
+        st.session_state["page"] = "Health Records"
 
-# 🟢 AFTER LOGIN FLOW
-else:
-    if choice == "Health Records":
-        health_records()
-    elif choice == "Medicine":
-        medicine()
-    elif choice == "Appointments":
-        appointments()
-    elif choice == "Diet":
-        diet()
-    elif choice == "Exercise":
-        exercise()
-    elif choice == "Reports":
-        reports()
-    elif choice == "Dashboard":
-        dashboard()
+    if st.sidebar.button("💊 Medicine"):
+        st.session_state["page"] = "Medicine"
+
+    if st.sidebar.button("👨‍⚕️ Appointments"):
+        st.session_state["page"] = "Appointments"
+
+    if st.sidebar.button("🥗 Diet"):
+        st.session_state["page"] = "Diet"
+
+    if st.sidebar.button("🏃 Exercise"):
+        st.session_state["page"] = "Exercise"
+
+    if st.sidebar.button("📄 Reports"):
+        st.session_state["page"] = "Reports"
+
+    if st.sidebar.button("🚪 Logout"):
+        st.session_state.clear()
+        st.rerun()
+
+# -------- PAGE RENDER --------
+page = st.session_state["page"]
+
+if page == "Register":
+    register()
+
+elif page == "Login":
+    login()
+
+elif page == "Dashboard":
+    dashboard()
+
+elif page == "Health Records":
+    health_records()
+
+elif page == "Medicine":
+    medicine()
+
+elif page == "Appointments":
+    appointments()
+
+elif page == "Diet":
+    diet()
+
+elif page == "Exercise":
+    exercise()
+
+elif page == "Reports":
+    reports()
