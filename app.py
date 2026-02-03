@@ -1,3 +1,17 @@
+import streamlit as st   # ✅ FIRST LINE (MANDATORY)
+
+from auth.login import login
+from auth.register import register
+
+from modules.health_records import health_records
+from modules.medicine import medicine
+from modules.appointments import appointments
+from modules.diet import diet
+from modules.exercise import exercise
+from modules.reports import reports
+from modules.dashboard import dashboard
+
+# 🔹 SIDEBAR CSS (NOW SAFE)
 st.markdown("""
 <style>
 /* Sidebar background */
@@ -30,19 +44,6 @@ section[data-testid="stSidebar"] button:hover {
 }
 </style>
 """, unsafe_allow_html=True)
-
-import streamlit as st
-
-from auth.login import login
-from auth.register import register
-
-from modules.health_records import health_records
-from modules.medicine import medicine
-from modules.appointments import appointments
-from modules.diet import diet
-from modules.exercise import exercise
-from modules.reports import reports
-from modules.dashboard import dashboard
 
 st.title("HealthIndia – Smart Healthcare System")
 
