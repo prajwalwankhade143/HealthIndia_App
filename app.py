@@ -7,6 +7,8 @@ from modules.appointments import appointments
 from modules.diet import diet
 from modules.exercise import exercise
 from modules.reports import reports
+from modules.dashboard import dashboard
+
 
 
 
@@ -14,7 +16,7 @@ from modules.reports import reports
 st.title("HealthIndia – Smart Healthcare System")
 
 # ✅ Diet menu added
-menu = ["Login", "Register", "Health Records", "Medicine", "Appointments", "Diet", "Exercise"]
+menu = ["Login", "Register", "Health Records", "Medicine", "Appointments", "Diet", "Exercise", "Reports", "Dashboard"]
 choice = st.sidebar.selectbox("Menu", menu)
 
 if choice == "Login":
@@ -59,3 +61,10 @@ elif choice == "Reports":
         reports()
     else:
         st.warning("Please login first")
+
+elif choice == "Dashboard":
+    if "user_id" in st.session_state:
+        dashboard()
+    else:
+        st.warning("Please login first")
+
