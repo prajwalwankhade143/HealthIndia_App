@@ -11,39 +11,55 @@ from modules.exercise import exercise
 from modules.reports import reports
 from modules.dashboard import dashboard
 
-# 🔹 SIDEBAR CSS (NOW SAFE)
 st.markdown("""
 <style>
-/* Sidebar background */
+
+/* ---- Sidebar background ---- */
 section[data-testid="stSidebar"] {
-    background-color: #f5f7fb;
+    background: linear-gradient(180deg, #f8f9fc, #eef1f7);
+    padding: 10px;
 }
 
-/* Sidebar title */
+/* ---- Sidebar title ---- */
 section[data-testid="stSidebar"] h1 {
-    color: #2c3e50;
+    color: #1f2937;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
-/* Sidebar buttons style */
+/* ---- Sidebar buttons (card style) ---- */
 section[data-testid="stSidebar"] button {
     width: 100%;
-    border-radius: 8px;
-    margin: 6px 0px;
-    padding: 10px;
-    background-color: white;
-    color: #2c3e50;
-    border: 1px solid #dcdcdc;
+    border-radius: 12px;
+    margin: 8px 0px;
+    padding: 12px 14px;
+    background: white;
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
+    font-weight: 600;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.25s ease;
+}
+
+/* ---- Hover effect ---- */
+section[data-testid="stSidebar"] button:hover {
+    background: linear-gradient(90deg, #4f8bf9, #6a5cff);
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 6px 16px rgba(79,139,249,0.35);
+    border: none;
+}
+
+/* ---- Success box (Logged In) ---- */
+section[data-testid="stSidebar"] .stAlert {
+    border-radius: 10px;
     font-weight: 600;
 }
 
-/* Hover effect */
-section[data-testid="stSidebar"] button:hover {
-    background-color: #4f8bf9;
-    color: white;
-    border: none;
-}
 </style>
 """, unsafe_allow_html=True)
+
 
 st.title("HealthIndia – Smart Healthcare System")
 
