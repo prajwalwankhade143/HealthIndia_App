@@ -1,6 +1,8 @@
 import streamlit as st
+
 from auth.login import login
 from auth.register import register
+
 from modules.health_records import health_records
 from modules.medicine import medicine
 from modules.appointments import appointments
@@ -9,62 +11,47 @@ from modules.exercise import exercise
 from modules.reports import reports
 from modules.dashboard import dashboard
 
-
-
-
-
 st.title("HealthIndia – Smart Healthcare System")
 
-# ✅ Diet menu added
-menu = ["Login", "Register", "Health Records", "Medicine", "Appointments", "Diet", "Exercise", "Reports", "Dashboard"]
+# 🔐 CHECK LOGIN STATUS
+is_logged_in = "user_id" in st.session_state
+
+# 🧭 MENU CONTROL
+if not is_logged_in:
+    menu = ["Register", "Login"]
+else:
+    menu = [
+        "Health Records",
+        "Medicine",
+        "Appointments",
+        "Diet",
+        "Exercise",
+        "Reports",
+        "Dashboard"
+    ]
+
 choice = st.sidebar.selectbox("Menu", menu)
 
-if choice == "Login":
-    login()
+# 🟢 BEFORE LOGIN
+if not is_logged_in:
+    if choice == "Register":
+        register()
+    elif choice == "Login":
+        login()
 
-elif choice == "Register":
-    register()
-
-elif choice == "Health Records":
-    if "user_id" in st.session_state:
+# 🟢 AFTER LOGIN
+else:
+    if choice == "Health Records":
         health_records()
-    else:
-        st.warning("Please login first")
-
-elif choice == "Medicine":
-    if "user_id" in st.session_state:
+    elif choice == "Medicine":
         medicine()
-    else:
-        st.warning("Please login first")
-
-elif choice == "Appointments":
-    if "user_id" in st.session_state:
+    elif choice == "Appointments":
         appointments()
-    else:
-        st.warning("Please login first")
-
-elif choice == "Diet":
-    if "user_id" in st.session_state:
+    elif choice == "Diet":
         diet()
-    else:
-        st.warning("Please login first")
-
-
-elif choice == "Exercise":
-    if "user_id" in st.session_state:
+    elif choice == "Exercise":
         exercise()
-    else:
-        st.warning("Please login first")
-
-elif choice == "Reports":
-    if "user_id" in st.session_state:
+    elif choice == "Reports":
         reports()
-    else:
-        st.warning("Please login first")
-
-elif choice == "Dashboard":
-    if "user_id" in st.session_state:
+    elif choice == "Dashboard":
         dashboard()
-    else:
-        st.warning("Please login first")
-
