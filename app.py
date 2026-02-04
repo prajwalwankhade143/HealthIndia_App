@@ -18,6 +18,7 @@ from modules.appointments import appointments
 from modules.diet import diet
 from modules.exercise import exercise
 from modules.reports import reports
+from modules.feedback import feedback_page
 from modules.dashboard import dashboard
 
 
@@ -148,6 +149,10 @@ else:
     if st.sidebar.button("📄 Reports"):
         st.session_state["page"] = "Reports"
 
+    if st.sidebar.button("⭐ Feedback & Rating"):
+       st.session_state["page"] = "Feedback"
+
+
     # ---------- GOOGLE MAP SEARCH (SIDEBAR) ----------
     st.sidebar.markdown("---")
     st.sidebar.subheader("📍 Hospital Map")
@@ -194,6 +199,8 @@ elif page == "Exercise":
 elif page == "Reports":
     reports()
 
+elif page == "Feedback":
+    feedback_page()
 
 # -------- GOOGLE MAP DISPLAY (MAIN PAGE + DB SAVE) --------
 if is_logged_in and 'search_map' in locals() and search_map and hospital_place:
