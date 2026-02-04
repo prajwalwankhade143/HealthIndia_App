@@ -40,7 +40,7 @@ def reports():
         """
         cursor.execute(query, (st.session_state["user_id"],))
 
-    else:  # Yearly
+    else:  # Yearly Report
         query = """
             SELECT bmi, bp, created_at
             FROM health_records
@@ -51,6 +51,19 @@ def reports():
 
     data = cursor.fetchall()
 
+    # ---------- SAVE REPORT GENERATION TO DATABASE ----------
+    conn2 = get_connection()
+    cursor2 = conn2.cursor()
+    cursor2.execute(
+        """
+        INSERT INTO report_history (user_id, report_type)
+        VALUES (%s, %s)
+        """,
+        (st.session_state["user_id"], report_type)
+    )
+    conn2.commit()
+
+    # ---------- DISPLAY ----------
     if data:
         df = pd.DataFrame(data, columns=["BMI", "Blood Pressure", "Date"])
         st.table(df)
