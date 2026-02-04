@@ -2,7 +2,7 @@ import streamlit as st   # ✅ FIRST LINE (MANDATORY)
 from db_connection import get_connection
 import urllib.parse
 
-# ---------- PAGE CONFIG (BLACK FLASH FIX) ----------
+# ---------- PAGE CONFIG ----------
 st.set_page_config(
     page_title="HealthIndia – Smart Healthcare System",
     layout="wide",
@@ -22,7 +22,7 @@ from modules.feedback import feedback_page
 from modules.dashboard import dashboard
 
 
-# ---------- GLOBAL UI FIX (REMOVE BLACK BACKGROUND) ----------
+# ---------- GLOBAL UI ----------
 st.markdown("""
 <style>
 
@@ -86,11 +86,21 @@ section[data-testid="stSidebar"] .stAlert {
     font-weight: 600;
 }
 
-input, textarea, select {
+/* INPUTS (EXCEPT SLIDER) */
+input:not([type="range"]),
+textarea,
+select {
     background-color: #f1f5f9 !important;
     border-radius: 10px !important;
 }
 
+/* SLIDER FIX */
+input[type="range"] {
+    pointer-events: auto !important;
+    background: transparent !important;
+}
+
+/* TABLES & CHARTS */
 [data-testid="stDataFrame"],
 [data-testid="stChart"] {
     background-color: #ffffff;
@@ -116,7 +126,7 @@ is_logged_in = "user_id" in st.session_state
 # -------- SIDEBAR --------
 st.sidebar.title("Menu")
 
-# 🔹 BEFORE LOGIN
+# BEFORE LOGIN
 if not is_logged_in:
     if st.sidebar.button("📝 Register"):
         st.session_state["page"] = "Register"
@@ -124,7 +134,7 @@ if not is_logged_in:
     if st.sidebar.button("🔐 Login"):
         st.session_state["page"] = "Login"
 
-# 🔹 AFTER LOGIN
+# AFTER LOGIN
 else:
     st.sidebar.success("Logged In")
 
@@ -150,10 +160,9 @@ else:
         st.session_state["page"] = "Reports"
 
     if st.sidebar.button("⭐ Feedback & Rating"):
-       st.session_state["page"] = "Feedback"
+        st.session_state["page"] = "Feedback"
 
-
-    # ---------- GOOGLE MAP SEARCH (SIDEBAR) ----------
+    # GOOGLE MAP SEARCH
     st.sidebar.markdown("---")
     st.sidebar.subheader("📍 Hospital Map")
 
@@ -202,13 +211,13 @@ elif page == "Reports":
 elif page == "Feedback":
     feedback_page()
 
-# -------- GOOGLE MAP DISPLAY (MAIN PAGE + DB SAVE) --------
+
+# -------- GOOGLE MAP DISPLAY --------
 if is_logged_in and 'search_map' in locals() and search_map and hospital_place:
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    # SAVE SEARCH TO DATABASE
     cursor.execute(
         """
         INSERT INTO map_search_history (user_id, location_name)
@@ -229,8 +238,7 @@ if is_logged_in and 'search_map' in locals() and search_map and hospital_place:
             width="100%"
             height="450"
             style="border:0; border-radius:14px;"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
+            loading="lazy">
         </iframe>
         """,
         height=470

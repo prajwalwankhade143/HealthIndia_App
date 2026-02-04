@@ -6,7 +6,7 @@ def feedback_page():
 
     doctor_name = st.text_input("Doctor Name")
     hospital_name = st.text_input("Hospital Name")
-    rating = st.slider("Rating (1 = Worst, 5 = Best)", 1, 5)
+    rating = st.slider("Rating (1 = Worst, 5 = Best)", 1, 5,3)
     feedback_text = st.text_area("Your Feedback")
 
     if st.button("Submit Feedback"):
