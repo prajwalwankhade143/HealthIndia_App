@@ -10,15 +10,27 @@ st.set_page_config(
 )
 
 # ---------- IMAGE HELPER ----------
+import os
+
 def show_page_image(image_path, title=None):
     col1, col2, col3 = st.columns([1, 3, 1])
+
     with col2:
         if title:
             st.markdown(
                 f"<h2 style='text-align:center'>{title}</h2>",
                 unsafe_allow_html=True
             )
-        st.image(image_path, use_container_width=True)
+
+        # ✅ SAFE IMAGE LOAD
+        if os.path.exists(image_path):
+            try:
+                st.image(image_path, use_container_width=True)
+            except Exception:
+                st.info("🖼️ Image format issue, skipping image.")
+        else:
+            st.info("🖼️ Image not found, skipping image.")
+
 
 # ---------- IMPORTS ----------
 from auth.login import login
