@@ -20,6 +20,7 @@ from modules.exercise import exercise
 from modules.reports import reports
 from modules.feedback import feedback_page
 from modules.dashboard import dashboard
+from modules.government_schemes import government_schemes
 
 
 # ---------- GLOBAL UI ----------
@@ -159,6 +160,9 @@ else:
     if st.sidebar.button("📄 Reports"):
         st.session_state["page"] = "Reports"
 
+    if st.sidebar.button("🏛️ Government Schemes"):
+       st.session_state["page"] = "Government Schemes"
+
     if st.sidebar.button("⭐ Feedback & Rating"):
         st.session_state["page"] = "Feedback"
 
@@ -208,6 +212,10 @@ elif page == "Exercise":
 elif page == "Reports":
     reports()
 
+elif page == "Government Schemes":
+    government_schemes()
+
+
 elif page == "Feedback":
     feedback_page()
 
@@ -245,3 +253,4 @@ if is_logged_in and 'search_map' in locals() and search_map and hospital_place:
     )
 
     st.success("📌 Location search saved successfully")
+    
