@@ -2,6 +2,18 @@ import streamlit as st   # ✅ FIRST LINE (MANDATORY)
 from db_connection import get_connection
 import urllib.parse
 
+def show_page_image(image_path, title=None):
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+        if title:
+            st.markdown(
+                f"<h2 style='text-align:center'>{title}</h2>",
+                unsafe_allow_html=True
+            )
+        st.image(image_path, use_container_width=True)
+
+
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
     page_title="HealthIndia – Smart Healthcare System",
@@ -21,6 +33,7 @@ from modules.reports import reports
 from modules.feedback import feedback_page
 from modules.dashboard import dashboard
 from modules.government_schemes import government_schemes
+
 
 
 # ---------- GLOBAL UI ----------
@@ -181,6 +194,61 @@ else:
         st.session_state.clear()
         st.rerun()
 
+    page = st.session_state.get("page", "Register")
+
+if page == "Register":
+    show_page_image(
+        "assets/images/register_healthindia.png",
+        "HealthIndia – Smart Healthcare System"
+    )
+
+elif page == "Login":
+    show_page_image(
+        "assets/images/register_healthindia.png",
+        "HealthIndia – Smart Healthcare System"
+    )
+
+elif page == "Dashboard":
+    show_page_image(
+        "assets/images/welcome_healthindia.png",
+        "Welcome to HealthIndia"
+    )
+
+elif page == "Appointments":
+    show_page_image(
+        "assets/images/appointments.png",
+        "Doctor Appointments"
+    )
+
+elif page == "Medicine":
+    show_page_image(
+        "assets/images/medicine.png",
+        "Medicine Management"
+    )
+
+elif page == "Diet":
+    show_page_image(
+        "assets/images/diet.png",
+        "Healthy Diet Plan"
+    )
+
+elif page == "Exercise":
+    show_page_image(
+        "assets/images/exercise.png",
+        "Exercise & Fitness"
+    )
+
+elif page == "Reports":
+    show_page_image(
+        "assets/images/reports.png",
+        "Health Reports"
+    )
+
+elif page == "Government Schemes":
+    show_page_image(
+        "assets/images/govt_schemes.png",
+        "Indian Government Health Schemes"
+    )
 
 # -------- PAGE RENDER --------
 page = st.session_state["page"]
