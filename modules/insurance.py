@@ -10,10 +10,9 @@ def insurance_page():
         placeholder="e.g. LIC Health, Star Health, HDFC Ergo"
     )
 
-    search_btn = st.button("🔍 Search Insurance")
+    if st.button("🔍 Search Insurance") and insurance_name:
 
-    if search_btn and insurance_name:
-        # SAVE TO DATABASE
+        # SAVE SEARCH TO DATABASE
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
@@ -26,20 +25,15 @@ def insurance_page():
         conn.commit()
 
         query = urllib.parse.quote(insurance_name)
-        insurance_url = f"https://www.google.com/search?q={query}+health+insurance"
-
-        st.markdown("### 🌐 Insurance Company Website")
-        st.components.v1.html(
-            f"""
-            <iframe
-                src="{insurance_url}"
-                width="100%"
-                height="450"
-                style="border:0; border-radius:14px;"
-                loading="lazy">
-            </iframe>
-            """,
-            height=470
-        )
+        google_url = f"https://www.google.com/search?q={query}+health+insurance"
 
         st.success("✅ Insurance search saved successfully")
+
+        # 👉 REAL WORKING GOOGLE OPEN
+        st.markdown(
+            f"""
+            ### 🌐 Open Insurance Results  
+            👉 [Click here to view on Google]({google_url})
+            """,
+            unsafe_allow_html=True
+        )
