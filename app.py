@@ -45,6 +45,7 @@ from modules.reports import reports
 from modules.feedback import feedback_page
 from modules.dashboard import dashboard
 from modules.government_schemes import government_schemes
+from modules.insurance import insurance_page
 
 
 # ---------- GLOBAL UI ----------
@@ -120,6 +121,9 @@ else:
         st.session_state["page"] = "Reports"
     if st.sidebar.button("🏛️ Government Schemes"):
         st.session_state["page"] = "Government Schemes"
+    if st.sidebar.button("🛡️ Insurance"):
+       st.session_state["page"] = "Insurance"
+
     if st.sidebar.button("⭐ Feedback & Rating"):
         st.session_state["page"] = "Feedback"
 
@@ -152,6 +156,10 @@ elif page == "Login":
 elif page == "Dashboard":
     show_page_image("assets/images/welcome_healthindia.png",
                     "Welcome to HealthIndia")
+    
+elif page == "Health Records":
+    show_page_image("assets/images/Health Records.png",
+                    "Health Records")
 
 elif page == "Appointments":
     show_page_image("assets/images/appointments.png",
@@ -177,6 +185,12 @@ elif page == "Government Schemes":
     show_page_image("assets/images/govt_schemes.png",
                     "Indian Government Health Schemes")
 
+elif page == "Insurance":
+    show_page_image(
+        "assets/images/insurance.png",
+        "Health Insurance & Policies"
+    )
+
 # ---------- PAGE RENDER ----------
 if page == "Register":
     register()
@@ -198,6 +212,8 @@ elif page == "Reports":
     reports()
 elif page == "Government Schemes":
     government_schemes()
+elif page == "Insurance":
+    insurance_page()
 elif page == "Feedback":
     feedback_page()
 

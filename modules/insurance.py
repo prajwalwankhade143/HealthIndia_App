@@ -1,0 +1,45 @@
+import streamlit as st
+import urllib.parse
+from db_connection import get_connection
+
+def insurance_page():
+    st.subheader("🛡️ Health Insurance Search")
+
+    insurance_name = st.text_input(
+        "Search Insurance Company",
+        placeholder="e.g. LIC Health, Star Health, HDFC Ergo"
+    )
+
+    search_btn = st.button("🔍 Search Insurance")
+
+    if search_btn and insurance_name:
+        # SAVE TO DATABASE
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO insurance_search_history (user_id, insurance_name)
+            VALUES (%s, %s)
+            """,
+            (st.session_state["user_id"], insurance_name)
+        )
+        conn.commit()
+
+        query = urllib.parse.quote(insurance_name)
+        insurance_url = f"https://www.google.com/search?q={query}+health+insurance"
+
+        st.markdown("### 🌐 Insurance Company Website")
+        st.components.v1.html(
+            f"""
+            <iframe
+                src="{insurance_url}"
+                width="100%"
+                height="450"
+                style="border:0; border-radius:14px;"
+                loading="lazy">
+            </iframe>
+            """,
+            height=470
+        )
+
+        st.success("✅ Insurance search saved successfully")
