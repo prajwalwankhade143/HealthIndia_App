@@ -1,6 +1,8 @@
-import streamlit as st   # ✅ FIRST LINE (MANDATORY)
-from db_connection import get_connection
+import streamlit as st
 import urllib.parse
+import os
+
+from firebase_db import db   # ✅ FIREBASE
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
@@ -10,11 +12,8 @@ st.set_page_config(
 )
 
 # ---------- IMAGE HELPER ----------
-import os
-
 def show_page_image(image_path, title=None):
     col1, col2, col3 = st.columns([1, 3, 1])
-
     with col2:
         if title:
             st.markdown(
@@ -22,7 +21,6 @@ def show_page_image(image_path, title=None):
                 unsafe_allow_html=True
             )
 
-        # ✅ SAFE IMAGE LOAD
         if os.path.exists(image_path):
             try:
                 st.image(image_path, use_container_width=True)
@@ -30,7 +28,6 @@ def show_page_image(image_path, title=None):
                 st.info("🖼️ Image format issue, skipping image.")
         else:
             st.info("🖼️ Image not found, skipping image.")
-
 
 # ---------- IMPORTS ----------
 from auth.login import login
@@ -47,16 +44,12 @@ from modules.dashboard import dashboard
 from modules.government_schemes import government_schemes
 from modules.insurance import insurance_page
 
-
 # ---------- GLOBAL UI ----------
 st.markdown("""
 <style>
 html, body, .stApp {
     background-color: #eef2f7 !important;
     color: #1f2937;
-}
-[data-testid="stAppViewContainer"] {
-    background-color: #eef2f7 !important;
 }
 .block-container {
     background-color: #ffffff;
@@ -68,18 +61,6 @@ html, body, .stApp {
 }
 section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #e6ecf5, #dde6f2) !important;
-    padding: 16px;
-}
-section[data-testid="stSidebar"] button {
-    width: 100%;
-    background-color: #ffffff !important;
-    border-radius: 12px;
-    margin: 8px 0;
-    padding: 12px;
-    font-weight: 600;
-}
-input[type="range"] {
-    pointer-events: auto !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -91,7 +72,7 @@ st.title("HealthIndia – Smart Healthcare System")
 if "page" not in st.session_state:
     st.session_state["page"] = "Register"
 
-is_logged_in = "user_id" in st.session_state
+is_logged_in = "user" in st.session_state
 
 # ---------- SIDEBAR ----------
 st.sidebar.title("Menu")
@@ -103,7 +84,7 @@ if not is_logged_in:
         st.session_state["page"] = "Login"
 
 else:
-    st.sidebar.success("Logged In")
+    st.sidebar.success(f"Welcome {st.session_state['user']}")
 
     if st.sidebar.button("📊 Dashboard"):
         st.session_state["page"] = "Dashboard"
@@ -122,8 +103,7 @@ else:
     if st.sidebar.button("🏛️ Government Schemes"):
         st.session_state["page"] = "Government Schemes"
     if st.sidebar.button("🛡️ Insurance"):
-       st.session_state["page"] = "Insurance"
-
+        st.session_state["page"] = "Insurance"
     if st.sidebar.button("⭐ Feedback & Rating"):
         st.session_state["page"] = "Feedback"
 
@@ -141,55 +121,36 @@ else:
         st.session_state.clear()
         st.rerun()
 
-# ✅ GLOBAL PAGE VARIABLE (FIX)
 page = st.session_state.get("page", "Register")
 
 # ---------- PAGE IMAGE ----------
 if page == "Register":
     show_page_image("assets/images/register_healthindia.png",
                     "HealthIndia – Smart Healthcare System")
-
 elif page == "Login":
     show_page_image("assets/images/register_healthindia.png",
                     "HealthIndia – Smart Healthcare System")
-
 elif page == "Dashboard":
     show_page_image("assets/images/welcome_healthindia.png",
                     "Welcome to HealthIndia")
-    
 elif page == "Health Records":
-    show_page_image("assets/images/Health Records.png",
-                    "Health Records")
-
+    show_page_image("assets/images/Health Records.png", "Health Records")
 elif page == "Appointments":
-    show_page_image("assets/images/appointments.png",
-                    "Doctor Appointments")
-
+    show_page_image("assets/images/appointments.png", "Doctor Appointments")
 elif page == "Medicine":
-    show_page_image("assets/images/medicine.png",
-                    "Medicine Management")
-
+    show_page_image("assets/images/medicine.png", "Medicine Management")
 elif page == "Diet":
-    show_page_image("assets/images/diet.png",
-                    "Healthy Diet Plan")
-
+    show_page_image("assets/images/diet.png", "Healthy Diet Plan")
 elif page == "Exercise":
-    show_page_image("assets/images/exercise.png",
-                    "Exercise & Fitness")
-
+    show_page_image("assets/images/exercise.png", "Exercise & Fitness")
 elif page == "Reports":
-    show_page_image("assets/images/reports.png",
-                    "Health Reports")
-
+    show_page_image("assets/images/reports.png", "Health Reports")
 elif page == "Government Schemes":
     show_page_image("assets/images/govt_schemes.png",
                     "Indian Government Health Schemes")
-
 elif page == "Insurance":
-    show_page_image(
-        "assets/images/insurance.png",
-        "Health Insurance & Policies"
-    )
+    show_page_image("assets/images/insurance.png",
+                    "Health Insurance & Policies")
 
 # ---------- PAGE RENDER ----------
 if page == "Register":
@@ -217,22 +178,19 @@ elif page == "Insurance":
 elif page == "Feedback":
     feedback_page()
 
-# ---------- GOOGLE MAP DISPLAY ----------
-if is_logged_in and 'search_map' in locals() and search_map and hospital_place:
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO map_search_history (user_id, location_name) VALUES (%s,%s)",
-        (st.session_state["user_id"], hospital_place)
-    )
-    conn.commit()
+# ---------- GOOGLE MAP DISPLAY + FIREBASE SAVE ----------
+if is_logged_in and search_map and hospital_place:
+    db.collection("map_search_history").add({
+        "user": st.session_state["user"],
+        "location": hospital_place
+    })
 
     query = urllib.parse.quote(hospital_place)
     map_url = f"https://www.google.com/maps?q={query}&output=embed"
 
     st.markdown("### 📍 Hospital Location")
     st.components.v1.html(
-        f"<iframe src='{map_url}' width='100%' height='450' style='border-radius:14px;'></iframe>",
+        f"<iframe src='{map_url}' width='100%' height='450'></iframe>",
         height=470
     )
-    st.success("📌 Location search saved successfully")
+    st.success("📌 Location search saved (Firebase)")
