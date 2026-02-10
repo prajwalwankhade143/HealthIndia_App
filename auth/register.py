@@ -10,13 +10,20 @@ def register():
     password = st.text_input("Password", type="password")
 
     if st.button("Register"):
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO users (name, email, password) VALUES (%s,%s,%s)",
-            (name, email, password)
-        )
-        conn.commit()
+        try:
+            conn = get_connection()
+            print("DB CONNECTED")
 
-        st.success("Registration successful. Please login.")
-        st.session_state["page"] = "Login"
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO users (name, email, password) VALUES (%s,%s,%s)",
+                (name, email, password)
+            )
+            conn.commit()
+
+            st.success("Registration successful. Please login.")
+            st.session_state["page"] = "Login"
+
+        except Exception as e:
+            st.error("Database error")
+            print("REAL ERROR 👉", e)
