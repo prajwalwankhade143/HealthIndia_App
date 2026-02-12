@@ -1,17 +1,12 @@
 import mysql.connector
-from urllib.parse import urlparse
 import streamlit as st
 
 def get_connection():
-    DATABASE_URL = st.secrets["mysql://root:QdnZxesGOAFEnZSFfdyvyRKTlEyAGBHV@metro.proxy.rlwy.net:18933/railway"]
-
-    url = urlparse(DATABASE_URL)
-
     return mysql.connector.connect(
-        host=url.hostname,
-        user=url.username,
-        password=url.password,
-        database=url.path[1:],
-        port=url.port,
+        host=st.secrets["DB_HOST"],
+        port=int(st.secrets["DB_PORT"]),
+        user=st.secrets["DB_USER"],
+        password=st.secrets["DB_PASSWORD"],
+        database=st.secrets["DB_NAME"],
         ssl_disabled=False
     )
