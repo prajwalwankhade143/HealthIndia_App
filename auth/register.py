@@ -1,5 +1,5 @@
 import streamlit as st
-from firebase_db import db
+from db_connection import get_connection
 
 def register():
     st.subheader("User Registration")
@@ -9,11 +9,13 @@ def register():
     password = st.text_input("Password", type="password")
 
     if st.button("Register"):
-        if name and email and password:
-            db.collection("users").add({
-                "name": name,
-                "email": email
-            })
-            st.success("Registered Successfully! Now Login.")
-        else:
-            st.warning("All fields required")
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
+            (name, email, password)
+        )
+        conn.commit()
+
+        st.success("Registered Successfully")
